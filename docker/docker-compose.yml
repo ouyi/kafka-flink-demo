@@ -26,6 +26,8 @@ services:
     command: jobmanager
     environment:
     - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    volumes:
+      - ../target:/target
   taskmanager:
     image: ${FLINK_DOCKER_IMAGE_NAME:-flink}
     expose:
