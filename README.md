@@ -13,4 +13,4 @@ Project was initialized using the Maven archetype [flink-quickstart-java](https:
     cd docker
     docker-compose up
     docker exec -u 0 -it docker_jobmanager_1 bash
-    java -jar /target/abc.jar
+    java -jar /code/target/kafka-flink-demo-1.0-SNAPSHOT.jar
