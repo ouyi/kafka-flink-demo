@@ -1,7 +1,7 @@
 version: "3"
 services:
   zookeeper:
-    image: zookeeper
+    image: zookeeper:3.4.13
     restart: always
     ports:
     - 2181:2181
@@ -18,7 +18,7 @@ services:
     depends_on:
     - zookeeper
   jobmanager:
-    image: ${FLINK_DOCKER_IMAGE_NAME:-flink}
+    image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.7.0-scala_2.12}
     expose:
     - "6123"
     ports:
@@ -29,7 +29,7 @@ services:
     volumes:
       - ..:/code
   taskmanager:
-    image: ${FLINK_DOCKER_IMAGE_NAME:-flink}
+    image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.7.0-scala_2.12}
     expose:
     - "6121"
     - "6122"
