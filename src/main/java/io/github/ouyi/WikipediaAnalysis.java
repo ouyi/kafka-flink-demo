@@ -44,7 +44,8 @@ public class WikipediaAnalysis {
             public String map(Tuple2<String, Long> value) throws Exception {
                 return value.toString();
             }
-        }).addSink(new FlinkKafkaProducer<String>("localhost:19092", "wiki-results", new SimpleStringSchema()));
+        }).addSink(new FlinkKafkaProducer<String>("kafka:9092", "wiki-results", new SimpleStringSchema()));
+        // To run this class from IDE, use localhost:19092
 
         see.execute();
     }
