@@ -30,11 +30,14 @@ In another terminal:
     docker exec -u 0 -it docker_jobmanager_1 bash
     flink run -c io.github.ouyi.WikipediaAnalysis /code/targ/kafka-flink-demo-1.0-SNAPSHOT.jar
 
-Watch the updates in the first terminal, and visit http://localhost:8081 with a browser to play with the Flink UI. To stop the execution:
+Watch the updates in the first terminal, and visit http://localhost:8081 with a browser to play with the Flink UI.
+
+To stop the execution, run in the second terminal:
 
     flink list
     flink cancel <jobId>
 
 ## Clean up
 
+    cd docker
     docker-compose down -v
