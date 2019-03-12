@@ -27,7 +27,7 @@ services:
     environment:
     - JOB_MANAGER_RPC_ADDRESS=jobmanager
     volumes:
-      - ..:/code
+    - ..:/code
   taskmanager:
     image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.7.0-scala_2.12}
     expose:

@@ -15,3 +15,4 @@
     docker exec -u 0 -it docker_kafka_1 bash
     $KAFKA_HOME/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic test
     $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic test --from-beginning
+    yq r docker-compose.yml > docker-compose.yml.tmp && mv docker-compose.yml.tmp docker-compose.yml
