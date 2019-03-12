@@ -1,4 +1,4 @@
 .idea/
-kafka-flink-demo.iml
+kafka-flink-demo*.iml
 target/
 dependency-reduced-pom.xml
