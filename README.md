@@ -8,7 +8,7 @@ Project was initialized using the Maven archetype [flink-quickstart-java](https:
 
 ## Build
 
-    mvn package
+    ./mvnw package
 
 
 ## Run
