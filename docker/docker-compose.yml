@@ -17,6 +17,8 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
     depends_on:
     - zookeeper
+    volumes:
+    - ..:/code
   jobmanager:
     image: ${FLINK_DOCKER_IMAGE_NAME:-flink:1.7.0-scala_2.12}
     expose:
