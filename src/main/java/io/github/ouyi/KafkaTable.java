@@ -2,13 +2,16 @@ package io.github.ouyi;
 
 import io.github.ouyi.kafka.Constants;
 import org.apache.flink.streaming.api.TimeCharacteristic;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.Types;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
 import org.apache.flink.table.descriptors.Json;
 import org.apache.flink.table.descriptors.Kafka;
 import org.apache.flink.table.descriptors.Rowtime;
 import org.apache.flink.table.descriptors.Schema;
+import org.apache.flink.types.Row;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 
 import java.util.Properties;
@@ -69,7 +72,11 @@ public class KafkaTable {
             .registerTableSink("table_output");
 
 //        tableEnv.scan("table_input").insertInto("table_output");
-        tableEnv.sqlUpdate("insert into table_output select * from table_input");
+//        tableEnv.sqlUpdate("insert into table_output select * from table_input");
+
+        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, count(1) as cnt from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
+        DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
+        dataStream.print();
 
         env.execute(KafkaTable.class.getName());
     }
