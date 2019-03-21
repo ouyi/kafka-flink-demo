@@ -68,7 +68,8 @@ public class KafkaTable {
             .inAppendMode()
             .registerTableSink("table_output");
 
-        tableEnv.scan("table_input").insertInto("table_output");
+//        tableEnv.scan("table_input").insertInto("table_output");
+        tableEnv.sqlUpdate("insert into table_output select * from table_input");
 
         env.execute(KafkaTable.class.getName());
     }
@@ -157,5 +158,7 @@ org.apache.flink.streaming.connectors.kafka.KafkaTableSourceSinkFactory
 	at io.github.ouyi.KafkaTable.main(KafkaTable.java:49)
 
 Process finished with exit code 1
+
+https://ci.apache.org/projects/flink/flink-docs-stable/dev/connectors/kafka.html
 
  */
