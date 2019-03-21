@@ -74,9 +74,22 @@ public class KafkaTable {
 //        tableEnv.scan("table_input").insertInto("table_output");
 //        tableEnv.sqlUpdate("insert into table_output select * from table_input");
 
+//        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, " +
+//            "extract(MONTH FROM CAST(TUMBLE_START(ts, INTERVAL '1' MINUTE) as DATE)) as wmonth, " +
+//            "extract(DAY FROM CAST(TUMBLE_START(ts, INTERVAL '1' MINUTE) as DATE)) as wday, " +
+//            "count(1) as cnt " +
+//            "from table_input " +
+//            "group by tumble(ts, INTERVAL '1' MINUTE)");
+
         Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, count(1) as cnt from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
+
         DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
         dataStream.print();
+
+        Table table2 = tableEnv.sqlQuery("select * from table_input");
+
+        DataStream<Row> dataStream2 = tableEnv.toAppendStream(table2, Row.class);
+        dataStream2.print();
 
         env.execute(KafkaTable.class.getName());
     }
