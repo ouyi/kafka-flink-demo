@@ -1,6 +1,7 @@
 package io.github.ouyi.kafka;
 
 public interface Constants {
+//    String KAFKA_BROKERS = "kafka:9092";
     String KAFKA_BROKERS = "localhost:19092";
     String CLIENT_ID = "client1";
     String TOPIC_NAME = "test";

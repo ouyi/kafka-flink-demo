@@ -36,13 +36,13 @@ public class KafkaTable {
             )
             .withSchema(
                 new Schema()
-                    .field("data", Types.LONG())
                     .field("ts", Types.SQL_TIMESTAMP()) // use a different field name to avoid Issue 1
                     .rowtime(
                         new Rowtime()
                             .timestampsFromField("timestamp")
-                            .watermarksPeriodicBounded(1000)
+                            .watermarksPeriodicBounded(60000)
                     )
+                    .field("data", Types.LONG())
             )
             .withFormat(
                 new Json()
@@ -81,7 +81,11 @@ public class KafkaTable {
 //            "from table_input " +
 //            "group by tumble(ts, INTERVAL '1' MINUTE)");
 
-        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, count(1) as cnt from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
+        execute(env, tableEnv);
+    }
+
+    private static void execute(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv) throws Exception {
+        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
 
         DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
         dataStream.print();
