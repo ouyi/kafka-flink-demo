@@ -217,7 +217,7 @@ under the License.
                                 <!--
                                 Starting execution of program
 
-------------------------------------------------------------
+
  The program finished with the following exception:
 
 org.apache.flink.client.program.ProgramInvocationException: The main method caused an error.
