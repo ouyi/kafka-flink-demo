@@ -4,6 +4,7 @@ import io.github.ouyi.kafka.Constants;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.watermark.Watermark;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.Types;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
@@ -11,6 +12,7 @@ import org.apache.flink.table.descriptors.Json;
 import org.apache.flink.table.descriptors.Kafka;
 import org.apache.flink.table.descriptors.Rowtime;
 import org.apache.flink.table.descriptors.Schema;
+import org.apache.flink.table.sources.wmstrategies.PunctuatedWatermarkAssigner;
 import org.apache.flink.types.Row;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 
@@ -20,6 +22,8 @@ public class KafkaTable {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+        System.out.println(env.getConfig().getAutoWatermarkInterval());
+        env.getConfig().setAutoWatermarkInterval(1L);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.getTableEnvironment(env);
 
         Properties props = new Properties();
@@ -40,7 +44,14 @@ public class KafkaTable {
                     .rowtime(
                         new Rowtime()
                             .timestampsFromField("timestamp")
-                            .watermarksPeriodicBounded(60000)
+//                            .watermarksPeriodicBounded(60000)
+//                            .watermarksPeriodicAscending()
+                            .watermarksFromStrategy(new PunctuatedWatermarkAssigner() {
+                                @Override
+                                public Watermark getWatermark(Row row, long timestamp) {
+                                    return new Watermark(timestamp - 60000);
+                                }
+                            })
                     )
                     .field("data", Types.LONG())
             )
