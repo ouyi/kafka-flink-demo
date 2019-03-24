@@ -22,8 +22,8 @@ public class KafkaTable {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-        System.out.println(env.getConfig().getAutoWatermarkInterval());
-        env.getConfig().setAutoWatermarkInterval(1L);
+//        System.out.println(env.getConfig().getAutoWatermarkInterval());
+//        env.getConfig().setAutoWatermarkInterval(1L);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.getTableEnvironment(env);
 
         Properties props = new Properties();
@@ -33,7 +33,8 @@ public class KafkaTable {
         tableEnv
             .connect(
                 new Kafka()
-                    .topic(Constants.TOPIC_NAME)
+                    .topic("test_input")
+//                    .topic(Constants.TOPIC_NAME)
                     .properties(props)
                     .version("universal") // needed to avoid Issue 3
                     .startFromEarliest()
@@ -97,11 +98,13 @@ public class KafkaTable {
 
     private static void execute(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv) throws Exception {
         Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
+//        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input where ts <= '2019-03-06 16:02:00' group by tumble(ts, INTERVAL '1' MINUTE)");
 
         DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
         dataStream.print();
 
         Table table2 = tableEnv.sqlQuery("select * from table_input");
+//        Table table2 = tableEnv.sqlQuery("select * from table_input where ts <= '2019-03-06 16:02:00'");
 
         DataStream<Row> dataStream2 = tableEnv.toAppendStream(table2, Row.class);
         dataStream2.print();

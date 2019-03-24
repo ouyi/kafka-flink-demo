@@ -19,6 +19,7 @@ Interact with Kafka from within the Docker container:
 
     docker exec -u 0 -it docker_kafka_1 bash
     $KAFKA_HOME/bin/kafka-topics.sh --describe --topic test --zookeeper zookeeper:2181
+    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test_input
     $KAFKA_HOME/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic test < ./test.txt
     $KAFKA_HOME/bin/kafka-console-producer.sh --broker-list kafka:9092 --topic test --property "parse.key=true" --property "key.separator=:" < ./test.txt
     $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server kafka:9092 --topic test --from-beginning

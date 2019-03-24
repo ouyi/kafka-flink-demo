@@ -37,6 +37,12 @@ To stop the execution, run in the second terminal:
     flink list
     flink cancel <jobId>
 
+To play with the standalone local filesystem connector:
+
+    /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test_input
+    /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/connect-file-source.properties
+    cat >> /var/tmp/test_input.json
+
 ## Clean up
 
     cd docker
