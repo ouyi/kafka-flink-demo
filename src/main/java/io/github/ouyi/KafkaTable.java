@@ -8,10 +8,7 @@ import org.apache.flink.streaming.api.watermark.Watermark;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.Types;
 import org.apache.flink.table.api.java.StreamTableEnvironment;
-import org.apache.flink.table.descriptors.Json;
-import org.apache.flink.table.descriptors.Kafka;
-import org.apache.flink.table.descriptors.Rowtime;
-import org.apache.flink.table.descriptors.Schema;
+import org.apache.flink.table.descriptors.*;
 import org.apache.flink.table.sources.wmstrategies.PunctuatedWatermarkAssigner;
 import org.apache.flink.types.Row;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -77,8 +74,9 @@ public class KafkaTable {
             )
             .withSchema(
                 new Schema()
-                    .field("data", Types.LONG())
                     .field("ts", Types.SQL_TIMESTAMP()) // this needs to match the query result field type, to avoid Issue 2
+                    .field("m", Types.LONG())
+                    .field("c", Types.LONG())
             )
             .inAppendMode()
             .registerTableSink("table_output");
@@ -108,6 +106,10 @@ public class KafkaTable {
 
         DataStream<Row> dataStream2 = tableEnv.toAppendStream(table2, Row.class);
         dataStream2.print();
+
+        tableEnv.registerTable("table_tmp", table);
+        tableEnv.scan("table_tmp").insertInto("table_output");
+//        tableEnv.sqlUpdate("insert into table_output select * from table_input");
 
         env.execute(KafkaTable.class.getName());
     }
