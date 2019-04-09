@@ -17,13 +17,15 @@ import java.util.Properties;
 
 public class KafkaTable {
     public static void main(String[] args) throws Exception {
+
+        Properties props = new Properties();
+        String kafkaBrokers = args.length > 0 ? args[0] : Constants.KAFKA_BROKERS;
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, Constants.GROUP_ID);
+
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.getTableEnvironment(env);
-
-        Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, Constants.KAFKA_BROKERS);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, Constants.GROUP_ID);
 
         tableEnv
             .connect(
@@ -85,16 +87,16 @@ public class KafkaTable {
         );
         tableEnv.registerTable("table_tmp", tableTmp);
 
-        DataStream<Row> dataStream = tableEnv.toAppendStream(tableTmp, Row.class);
-        dataStream.print();
-
-//        tableEnv.scan("table_tmp").insertInto("table_output");
         tableEnv.sqlUpdate(
             "INSERT INTO table_output " +
                 "SELECT * FROM table_tmp"
         );
+//        tableEnv.scan("table_tmp").insertInto("table_output"); // achieve the same with the Table API
 
         env.execute(KafkaTable.class.getName());
+
+        DataStream<Row> dataStream = tableEnv.toAppendStream(tableTmp, Row.class);
+        dataStream.print();
     }
 }
 
