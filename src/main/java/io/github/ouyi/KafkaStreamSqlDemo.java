@@ -15,7 +15,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 
 import java.util.Properties;
 
-public class KafkaTable {
+public class KafkaStreamSqlDemo {
     public static void main(String[] args) throws Exception {
 
         Properties props = new Properties();
@@ -93,10 +93,10 @@ public class KafkaTable {
         );
 //        tableEnv.scan("table_tmp").insertInto("table_output"); // achieve the same with the Table API
 
-        env.execute(KafkaTable.class.getName());
-
         DataStream<Row> dataStream = tableEnv.toAppendStream(tableTmp, Row.class);
         dataStream.print();
+
+        env.execute(KafkaStreamSqlDemo.class.getName());
     }
 }
 
@@ -119,7 +119,7 @@ Exception in thread "main" org.apache.flink.table.api.ValidationException: Field
 	at org.apache.flink.table.api.StreamTableEnvironment.registerTableSourceInternal(StreamTableEnvironment.scala:150)
 	at org.apache.flink.table.api.TableEnvironment.registerTableSource(TableEnvironment.scala:541)
 	at org.apache.flink.table.descriptors.ConnectTableDescriptor.registerTableSource(ConnectTableDescriptor.scala:47)
-	at io.github.ouyi.KafkaTable.main(KafkaTable.java:49)
+	at io.github.ouyi.KafkaStreamSqlDemo.main(KafkaStreamSqlDemo.java:49)
 
 Process finished with exit code 1
 
@@ -133,7 +133,7 @@ Query result schema: [data: Long, ts: Timestamp]
 TableSink schema:    [data: Long, ts: Long]
 	at org.apache.flink.table.api.TableEnvironment.insertInto(TableEnvironment.scala:876)
 	at org.apache.flink.table.api.Table.insertInto(table.scala:918)
-	at io.github.ouyi.KafkaTable.main(KafkaTable.java:71)
+	at io.github.ouyi.KafkaStreamSqlDemo.main(KafkaStreamSqlDemo.java:71)
 
 Process finished with exit code 1
 
@@ -180,7 +180,7 @@ org.apache.flink.streaming.connectors.kafka.KafkaTableSourceSinkFactory
 	at org.apache.flink.table.factories.TableFactoryService$.find(TableFactoryService.scala:81)
 	at org.apache.flink.table.factories.TableFactoryUtil$.findAndCreateTableSource(TableFactoryUtil.scala:49)
 	at org.apache.flink.table.descriptors.ConnectTableDescriptor.registerTableSource(ConnectTableDescriptor.scala:46)
-	at io.github.ouyi.KafkaTable.main(KafkaTable.java:49)
+	at io.github.ouyi.KafkaStreamSqlDemo.main(KafkaStreamSqlDemo.java:49)
 
 Process finished with exit code 1
 
