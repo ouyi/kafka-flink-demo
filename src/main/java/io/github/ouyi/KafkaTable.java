@@ -19,8 +19,6 @@ public class KafkaTable {
     public static void main(String[] args) throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-//        System.out.println(env.getConfig().getAutoWatermarkInterval());
-//        env.getConfig().setAutoWatermarkInterval(1L);
         StreamTableEnvironment tableEnv = StreamTableEnvironment.getTableEnvironment(env);
 
         Properties props = new Properties();
@@ -30,8 +28,7 @@ public class KafkaTable {
         tableEnv
             .connect(
                 new Kafka()
-                    .topic("test_input")
-//                    .topic(Constants.TOPIC_NAME)
+                    .topic(Constants.TOPIC_NAME_INPUT)
                     .properties(props)
                     .version("universal") // needed to avoid Issue 3
                     .startFromEarliest()
@@ -42,12 +39,10 @@ public class KafkaTable {
                     .rowtime(
                         new Rowtime()
                             .timestampsFromField("timestamp")
-//                            .watermarksPeriodicBounded(60000)
-//                            .watermarksPeriodicAscending()
                             .watermarksFromStrategy(new PunctuatedWatermarkAssigner() {
                                 @Override
                                 public Watermark getWatermark(Row row, long timestamp) {
-                                    return new Watermark(timestamp - 60000);
+                                    return new Watermark(timestamp - Constants.OUT_OF_ORDERNESS_MS);
                                 }
                             })
                     )
@@ -60,11 +55,10 @@ public class KafkaTable {
             .inAppendMode()
             .registerTableSource("table_input");
 
-
         tableEnv
             .connect(
                 new Kafka()
-                    .topic("test_output")
+                    .topic(Constants.TOPIC_NAME_OUTPUT)
                     .properties(props)
                     .version("universal")
             )
@@ -75,41 +69,30 @@ public class KafkaTable {
             .withSchema(
                 new Schema()
                     .field("ts", Types.SQL_TIMESTAMP()) // this needs to match the query result field type, to avoid Issue 2
-                    .field("m", Types.LONG())
-                    .field("c", Types.LONG())
+                    .field("v", Types.LONG())
             )
             .inAppendMode()
             .registerTableSink("table_output");
-
-//        tableEnv.scan("table_input").insertInto("table_output");
-//        tableEnv.sqlUpdate("insert into table_output select * from table_input");
-
-//        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, " +
-//            "extract(MONTH FROM CAST(TUMBLE_START(ts, INTERVAL '1' MINUTE) as DATE)) as wmonth, " +
-//            "extract(DAY FROM CAST(TUMBLE_START(ts, INTERVAL '1' MINUTE) as DATE)) as wday, " +
-//            "count(1) as cnt " +
-//            "from table_input " +
-//            "group by tumble(ts, INTERVAL '1' MINUTE)");
 
         execute(env, tableEnv);
     }
 
     private static void execute(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv) throws Exception {
-        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' SECOND) AS wstart, max(data) as m, count(1) as c from table_input group by tumble(ts, INTERVAL '1' SECOND)");
-//        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input where ts <= '2019-03-06 16:02:00' group by tumble(ts, INTERVAL '1' MINUTE)");
+        Table tableTmp = tableEnv.sqlQuery(
+            "SELECT TUMBLE_START(ts, INTERVAL '1' SECOND) AS wstart, SUM(data) AS v " +
+                "FROM table_input " +
+                "GROUP BY TUMBLE(ts, INTERVAL '1' SECOND)"
+        );
+        tableEnv.registerTable("table_tmp", tableTmp);
 
-        DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
+        DataStream<Row> dataStream = tableEnv.toAppendStream(tableTmp, Row.class);
         dataStream.print();
 
-        Table table2 = tableEnv.sqlQuery("select * from table_input");
-//        Table table2 = tableEnv.sqlQuery("select * from table_input where ts <= '2019-03-06 16:02:00'");
-
-        DataStream<Row> dataStream2 = tableEnv.toAppendStream(table2, Row.class);
-        dataStream2.print();
-
-        tableEnv.registerTable("table_tmp", table);
-        tableEnv.scan("table_tmp").insertInto("table_output");
-//        tableEnv.sqlUpdate("insert into table_output select * from table_input");
+//        tableEnv.scan("table_tmp").insertInto("table_output");
+        tableEnv.sqlUpdate(
+            "INSERT INTO table_output " +
+                "SELECT * FROM table_tmp"
+        );
 
         env.execute(KafkaTable.class.getName());
     }

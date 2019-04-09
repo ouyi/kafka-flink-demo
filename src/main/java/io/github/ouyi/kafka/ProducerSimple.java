@@ -25,18 +25,15 @@ public class ProducerSimple {
         KafkaProducer<String, Record> kafkaProducer = new KafkaProducer(properties);
         Random random = new Random(System.currentTimeMillis());
         while (true) {
-            Thread.sleep(random.nextInt(2000));
+            Thread.sleep(random.nextInt(600));
             produce(kafkaProducer, random);
         }
     }
 
     public static void produce(KafkaProducer<String, Record> kafkaProducer, Random random) throws ExecutionException, InterruptedException {
-
-        Object value = new Record(ZonedDateTime.now( ZoneOffset.ofHours(2) ).truncatedTo(ChronoUnit.MILLIS).format( DateTimeFormatter.ISO_OFFSET_DATE_TIME ), random.nextInt(100));
-        ProducerRecord<String, Record> producerRecord = new ProducerRecord("test_input", value);
-//        ProducerRecord<String, Record> producerRecord = new ProducerRecord(Constants.TOPIC_NAME, value);
-        RecordMetadata metadata = kafkaProducer.send(producerRecord).get();
-        System.out.println(metadata);
+        Object record = new Record(ZonedDateTime.now( ZoneOffset.ofHours(2) ).truncatedTo(ChronoUnit.MILLIS).format( DateTimeFormatter.ISO_OFFSET_DATE_TIME ), random.nextInt(100));
+        ProducerRecord<String, Record> producerRecord = new ProducerRecord(Constants.TOPIC_NAME_INPUT, record);
+        kafkaProducer.send(producerRecord);
+        System.out.println(producerRecord);
     }
 }
-
