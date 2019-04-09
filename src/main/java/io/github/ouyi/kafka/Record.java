@@ -1,7 +1,7 @@
 package io.github.ouyi.kafka;
 
 public class Record {
-    private long timestamp;
+    private String timestamp;
     private long data;
 
     /**
@@ -11,16 +11,16 @@ public class Record {
 
     }
 
-    public Record(long timestamp, long data) {
+    public Record(String timestamp, long data) {
         this.timestamp = timestamp;
         this.data = data;
     }
 
-    public long getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 

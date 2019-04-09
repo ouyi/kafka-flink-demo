@@ -95,7 +95,7 @@ public class KafkaTable {
     }
 
     private static void execute(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv) throws Exception {
-        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input group by tumble(ts, INTERVAL '1' MINUTE)");
+        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' SECOND) AS wstart, max(data) as m, count(1) as c from table_input group by tumble(ts, INTERVAL '1' SECOND)");
 //        Table table = tableEnv.sqlQuery("select TUMBLE_START(ts, INTERVAL '1' MINUTE) AS wstart, max(data) as m, count(1) as c from table_input where ts <= '2019-03-06 16:02:00' group by tumble(ts, INTERVAL '1' MINUTE)");
 
         DataStream<Row> dataStream = tableEnv.toAppendStream(table, Row.class);
