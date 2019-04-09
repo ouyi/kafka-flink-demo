@@ -19,6 +19,8 @@ Project was initialized using the Maven archetype [flink-quickstart-java](https:
 
 ## Play
 
+### The Wikipedia analysis demo
+
 In one terminal:
 
     docker exec -u 0 -it docker_kafka_1 bash
@@ -37,11 +39,25 @@ To stop the execution, run in the second terminal:
     flink list
     flink cancel <jobId>
 
-To play with the standalone local filesystem connector:
+### The Kafka stream SQL demo
 
+In one terminal, start the standalone local filesystem connector:
+
+    docker exec -u 0 -it docker_kafka_1 bash
     /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test_input
     /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/connect-file-source.properties
+
+In another terminal:
+
+    docker exec -u 0 -it docker_kafka_1 bash
     cat >> /var/tmp/test_input.json
+    // Paste in test records from demo/src/main/resources/test_input.json
+
+Start io.github.ouyi.KafkaStreamSqlDemo in IDE
+
+Create some visualizations using the index pattern `kafka` with the Kibana Web UI available at http://localhost:5601
+
+Start io.github.ouyi.kafka.ProducerSimple in IDE
 
 ## Clean up
 
