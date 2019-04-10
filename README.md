@@ -1,7 +1,7 @@
 
 # kafka-flink-demo
 
-A demo application based on Kafka and Flink
+A demo application implementing the Kappa architecture, based on Kafka, Flink, and ELK.
 
 Project was initialized using the Maven archetype [flink-quickstart-java](https://ci.apache.org/projects/flink/flink-docs-release-1.7/dev/projectsetup/java_api_quickstart.html).
 
