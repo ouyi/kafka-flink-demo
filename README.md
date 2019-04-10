@@ -39,7 +39,7 @@ To stop the execution, run in the second terminal:
     flink list
     flink cancel <jobId>
 
-### The Kafka stream SQL demo
+### The Kafka and Flink stream SQL demo
 
 In one terminal, start the standalone local filesystem connector:
 
@@ -53,11 +53,11 @@ In another terminal:
     cat >> /var/tmp/test_input.json
     // Paste in test records from demo/src/main/resources/test_input.json
 
-Start io.github.ouyi.KafkaStreamSqlDemo in IDE
+Start `io.github.ouyi.KafkaStreamSqlDemo` in IDE.
 
 Create some visualizations using the index pattern `kafka` with the Kibana Web UI available at http://localhost:5601
 
-Start io.github.ouyi.kafka.ProducerSimple in IDE
+Start `io.github.ouyi.kafka.ProducerSimple` in IDE.
 
 ## Clean up
 
