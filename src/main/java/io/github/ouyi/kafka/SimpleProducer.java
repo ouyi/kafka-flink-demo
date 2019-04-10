@@ -12,7 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Properties;
 import java.util.Random;
 
-public class ProducerSimple {
+public class SimpleProducer {
     public static void main(String[] args) throws Exception {
         Properties properties = new Properties();
         String kafkaBrokers = args.length > 0 ? args[0] : Constants.KAFKA_BROKERS;

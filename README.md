@@ -57,7 +57,7 @@ Start `io.github.ouyi.KafkaStreamSqlDemo` in IDE.
 
 Create some visualizations using the index pattern `kafka` with the Kibana Web UI available at http://localhost:5601
 
-Start `io.github.ouyi.kafka.ProducerSimple` in IDE.
+Start `io.github.ouyi.kafka.SimpleProducer` in IDE.
 
 ## Clean up
 
