@@ -55,7 +55,7 @@ In another terminal:
     cat >> /var/tmp/test_input.json
     // Paste in test records from demo/src/main/resources/test_input.json
 
-Create some visualizations using the index pattern `kafka` with the Kibana Web UI available at http://localhost:5601, or alternatively use the following command[^kibana_export]:
+Create some visualizations using the index pattern `kafka` with the Kibana Web UI available at http://localhost:5601, or alternatively use the following command<sup>[1](#kibana_export)</sup>:
 
     curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./docker/kibana/config/dashboard_demo.json
 
@@ -73,4 +73,6 @@ Visit http://localhost:8081 with a browser to play with the Flink UI.
     cd docker
     docker-compose down -v
 
-[^kibana_export]: To export a dashboard with all its dependencies: `curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=dashboard_id_hash > dashboard_demo.json`
+## Footnotes
+
+<a name="kibana_export">1</a>: To export a dashboard with all its dependencies: `curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=dashboard_id_hash > dashboard_demo.json`
