@@ -54,6 +54,10 @@ Delete a Kafka topic:
 
     $KAFKA_HOME/bin/kafka-topics.sh --delete --zookeeper zookeeper:2181 --topic test
 
+Docker compose rebuild only one container:
+
+    docker-compose up -d --no-deps --build kafka
+
 Indent the YAML file:
 
     yq r docker-compose.yml > docker-compose.yml.tmp && mv docker-compose.yml.tmp docker-compose.yml

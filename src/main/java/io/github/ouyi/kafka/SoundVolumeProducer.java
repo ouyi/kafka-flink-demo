@@ -31,7 +31,7 @@ public class SoundVolumeProducer {
 
     static void run(KafkaProducer kafkaProducer) {
         AudioFormat fmt = new AudioFormat(44100f, 16, 1, true, false);
-        final int bufferByteSize = 2048;
+        final int bufferByteSize = 2048 * 8;
 
         TargetDataLine line;
         try {
