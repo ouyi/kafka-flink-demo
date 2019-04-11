@@ -73,4 +73,4 @@ Visit http://localhost:8081 with a browser to play with the Flink UI.
     cd docker
     docker-compose down -v
 
-[^kibana_export] To export a dashboard with all its dependencies: `curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=dashboard_id_hash > dashboard_demo.json`
+[^kibana_export]: To export a dashboard with all its dependencies: `curl -XGET localhost:5601/api/kibana/dashboards/export?dashboard=dashboard_id_hash > dashboard_demo.json`
