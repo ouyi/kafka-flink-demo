@@ -47,7 +47,7 @@ In one terminal, start the standalone local filesystem connector:
     /opt/kafka/bin/kafka-topics.sh --create --zookeeper zookeeper:2181 --replication-factor 1 --partitions 1 --topic test_input
     /opt/kafka/bin/connect-standalone.sh /opt/kafka/config/connect-standalone.properties /opt/kafka/config/connect-file-source.properties
 
-Start `io.github.ouyi.KafkaStreamSqlDemo` in IDE with the argument `localhost:19092`.
+Start `io.github.ouyi.KafkaFlinkSqlDemo` in IDE with the argument `localhost:19092`.
 
 In another terminal:
 
@@ -59,10 +59,10 @@ Create some visualizations using the index pattern `kafka` with the Kibana Web U
 
     curl -XPOST localhost:5601/api/kibana/dashboards/import -H 'kbn-xsrf:true' -H 'Content-type:application/json' -d @./docker/kibana/config/dashboard_demo.json
 
-Stop `io.github.ouyi.KafkaStreamSqlDemo` in IDE and run in yet another terminal:
+Stop `io.github.ouyi.KafkaFlinkSqlDemo` in IDE and run in yet another terminal:
 
     docker exec -u 0 -it docker_jobmanager_1 bash
-    flink run -c io.github.ouyi.KafkaStreamSqlDemo /code/target/kafka-flink-demo-1.0-SNAPSHOT.jar
+    flink run -c io.github.ouyi.KafkaFlinkSqlDemo /code/target/kafka-flink-demo-1.0-SNAPSHOT.jar
 
 Start `io.github.ouyi.kafka.SoundVolumeProducer` in IDE.
 
